@@ -62,13 +62,15 @@ rl.on("line", reply => {
 `npm i yql@1.0.2 --save --save-exact`
 
 
-4. Make three folders 
+4. Make four folders 
 
 `mkdir patterns`
 
 `mkdir matcher`
 
 `mkdir weather`
+
+`mkdir parser`
 
 5. In each of the folder put an `index.js` file inside them
 
@@ -77,6 +79,8 @@ rl.on("line", reply => {
 `touch matcher/index.js`
 
 `touch weather/index.js`
+
+`touch parser/index.js`
 
 6. Copy and paste the following code for the respected file
 
@@ -100,6 +104,8 @@ module.exports = patternDict;
 ### matcher/index.js
 
 ```
+"use strict";
+
 const patterns = require("../patterns");
 const XRegExp = require("xregexp");
 
@@ -130,6 +136,8 @@ module.exports = matchPattern;
 ### weather/index.js
 
 ```
+"use strict";
+
 const YQL = require("yql");
 
 let getWeather = (location, type = "forecast") => {
@@ -149,6 +157,41 @@ let getWeather = (location, type = "forecast") => {
 module.exports = getWeather;
 ```
 
+### parser/index.js
+
+```
+let getFeel = temp => {
+    if(temp < 5) {
+		return "shivering cold";
+	} else if(temp >= 5 && temp < 15) {
+		return "pretty cold";
+	} else if(temp >= 15 && temp < 25) {
+		return "moderately cold";
+	} else if(temp >= 25 && temp < 32) {
+		return "quite warm";
+	} else if(temp >= 32 && temp < 40) {
+		return "very hot";
+	} else {
+		return "super hot";
+	}
+}
+
+let currentWeather = response => {
+    if(response.query.results){
+        let resp = response.query.results.channel;
+        let location = `${resp.location.city}, ${resp.location.country}`;
+
+        let {text, temp} = resp.item.condition;
+
+        return `Right now, it is ${text.toLowerCase()} in ${location}. It is ${getFeel(Number(temp))} at ${temp} degrees Fahrenheit.`
+    }
+}
+
+module.exports = {
+    currentWeather
+}
+```
+
 7. Run the app you can either use: 
 
 `nodemon app.js` (Recommended)
@@ -159,27 +202,25 @@ module.exports = getWeather;
 
 ## Test Case 
 
-User Input:
+Examples: (Note these examples may not state the exact tempature do to different time)
 
+User Input:
 `What is the weather like in Los Angeles`
 
+Output:
+`Right now, it is sunny in Los Angeles, United States. It is super hot at 62 degrees Fahrenheit.`
+
+User Input: 
 `What is the weather like in New York`
 
+Output:
+`Right now, it is cloudy in New York, United States. It is super hot at 49 degrees Fahrenheit.`
+
+User Input:
 `What is the weather like in Chicago`
 
-Output: JSON like this
-
-```
-{ 
-    query:
-    { 
-        count: 1,
-        created: '2018-03-29T16:46:36Z',
-        lang: 'en-US',
-        results: { channel: [Object] } 
-    } 
-}
-```
+Output: 
+`Right now, it is breezy in Chicago, United States. It is super hot at 43 degrees Fahrenheit.`
 
 <br>
 
