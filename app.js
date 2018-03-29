@@ -15,7 +15,7 @@ rl.on("line", reply => {
     matcher(reply, data => {
         switch(data.intent){
             case "Hello": 
-                console.log("Hello from Espresso");
+                console.log(`${data.entities.introduction} to you too!`);
                 rl.prompt();
                 break;
             case "Exit":
