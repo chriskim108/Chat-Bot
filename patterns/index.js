@@ -1,9 +1,9 @@
 const patternDict = [{
     pattern: "\\b(Hi|Hello|Hey)\\b",
-    intent: "Hello there"
+    intent: "Hello"
 }, {
     pattern: "\\b(bye|exit)\\b",
-    intent: "Bye it was nice knowing you"
+    intent: "Exit"
 }];
 
 module.exports = patternDict;

@@ -6,11 +6,25 @@ const rl = Readline.createInterface({
     output:process.stdout,
     terminal:false
 });
+const matcher = require("./matcher");
 
-rl.setPrompt("> Enter a name: ");
+rl.setPrompt("> ");
 rl.prompt();
 
 rl.on("line", reply => {
-    console.log(`You said ${reply}`);
-    rl.prompt();
+    matcher(reply, data => {
+        switch(data.intent){
+            case "Hello": 
+                console.log("Hello from Espresso");
+                rl.prompt();
+                break;
+            case "Exit":
+                console.log("See you later!");
+                process.exit(0);
+            default: {
+                console.log("I'm sorry I did not understand that");
+                rl.prompt();                
+            }
+        }
+    });
 });
